@@ -8,14 +8,20 @@ timestamp: 2026-07-12T00:00:00+09:00
 
 # Usage
 
-Create one concept document per paper using the following template. Keep the
-top-level section order stable, add method-specific subsections where useful,
-and remove optional sections that are empty in the completed note.
+Create one concept document per paper under [`papers/`](papers/) using the
+following template, and add it to [`papers/index.md`](papers/index.md). Keep
+the top-level section order stable, add method-specific subsections where
+useful, and remove optional sections that are empty in the completed note.
 
 Use the canonical publication page for `resource`, rather than a local PDF.
 Choose tags for the paper's topics; do not use tags for its venue or reading
 status. Preserve reading questions as headings so that they remain searchable.
 Distinguish claims made by the paper from personal interpretation or critique.
+Make Reading Question answers explanatory rather than merely definitional: lead
+with the direct answer, then add a concrete or worked example when it helps a
+reader understand the mechanism, calculation, or distinction.
+Format mathematical expressions for GitHub Markdown: use `$...$` inline and
+`$$...$$` on separate lines for display math.
 
 # Template
 
@@ -67,7 +73,11 @@ status: <to-read | reading | reviewed>
 
 ### Answer
 
-<!-- Answer from the paper first. Clearly label interpretation or inference. -->
+<!--
+Answer from the paper first, then add a concrete or worked example when useful.
+Prefer examples with realistic inputs, intermediate steps, and outputs over
+abstract restatements. Clearly label interpretation or inference.
+-->
 
 # Open Questions
 

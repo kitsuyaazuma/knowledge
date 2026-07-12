@@ -11,4 +11,5 @@ okf_version: "0.1"
 
 # Concepts
 
+* [Papers](papers/) - Reading notes and questions for research papers.
 * [Paper Note Template](paper-note-template.md) - Reusable metadata and section structure for paper reading notes.
