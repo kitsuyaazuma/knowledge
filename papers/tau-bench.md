@@ -146,10 +146,10 @@ Repeating one task instance produces multiple trajectories and binary results; t
 For each task, suppose $n$ trials yield $c$ successes. The paper uses
 
 $$
-\widehat{\operatorname{pass\text{\textasciicircum}}k}
+\widehat{\text{pass\textasciicircum} k}
 = \frac{\binom{c}{k}}{\binom{n}{k}},
 \qquad
-\widehat{\operatorname{pass@}k}
+\widehat{\text{pass@}k}
 = 1-\frac{\binom{n-c}{k}}{\binom{n}{k}},
 $$
 
@@ -195,14 +195,14 @@ $\binom{n}{k}$ counts all ways to select $k$ distinct trials from the $n$ observ
 With $n=5$, $c=3$, and $k=2$:
 
 $$
-\operatorname{pass\text{\textasciicircum}}2 = \frac{\binom{3}{2}}{\binom{5}{2}}
+\text{pass\textasciicircum}2 = \frac{\binom{3}{2}}{\binom{5}{2}}
 =\frac{3}{10}=0.3,
 $$
 
 because 3 of the 10 pairs contain two successes. Meanwhile,
 
 $$
-\operatorname{pass@}2
+\text{pass@}2
 =1-\frac{\binom{2}{2}}{\binom{5}{2}}
 =1-\frac{1}{10}=0.9,
 $$
