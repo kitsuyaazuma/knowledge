@@ -1,0 +1,127 @@
+#!/bin/sh
+
+set -eu
+
+usage() {
+    cat <<'EOF'
+Usage: scripts/fetch-paper [--refresh] <paper-note.md>
+
+Download the URL in a paper note's `pdf:` frontmatter field into the local
+cache and print the cached PDF path. Existing valid cache entries are reused
+unless --refresh is supplied.
+
+Environment:
+  XDG_CACHE_HOME  Cache base directory (default: $HOME/.cache)
+EOF
+}
+
+die() {
+    printf 'fetch-paper: %s\n' "$*" >&2
+    exit 1
+}
+
+refresh=0
+note=
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --refresh)
+            refresh=1
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            die "unknown option: $1"
+            ;;
+        *)
+            [ -z "$note" ] || die "only one paper note may be specified"
+            note=$1
+            ;;
+    esac
+    shift
+done
+
+if [ "$#" -gt 0 ]; then
+    [ -z "$note" ] || die "only one paper note may be specified"
+    [ "$#" -eq 1 ] || die "only one paper note may be specified"
+    note=$1
+fi
+
+[ -n "$note" ] || {
+    usage >&2
+    exit 2
+}
+[ -f "$note" ] || die "paper note not found: $note"
+command -v curl >/dev/null 2>&1 || die "curl is required"
+
+pdf_url=$(
+    awk '
+        NR == 1 && $0 == "---" { frontmatter = 1; next }
+        frontmatter && $0 == "---" { exit }
+        frontmatter && /^pdf:[[:space:]]*/ {
+            sub(/^pdf:[[:space:]]*/, "")
+            print
+            exit
+        }
+    ' "$note"
+)
+
+[ -n "$pdf_url" ] || die "missing pdf: field in $note"
+
+case "$pdf_url" in
+    https://*) ;;
+    *) die "pdf URL must use HTTPS: $pdf_url" ;;
+esac
+
+case "$pdf_url" in
+    *[[:space:]]*) die "pdf URL must not contain whitespace" ;;
+esac
+
+if [ -n "${XDG_CACHE_HOME:-}" ]; then
+    cache_home=$XDG_CACHE_HOME
+else
+    [ -n "${HOME:-}" ] || die "HOME must be set when XDG_CACHE_HOME is not set"
+    cache_home=$HOME/.cache
+fi
+cache_dir=$cache_home/knowledge/papers
+note_name=$(basename "$note" .md)
+destination=$cache_dir/$note_name.pdf
+
+is_pdf() {
+    [ -f "$1" ] && [ "$(LC_ALL=C dd if="$1" bs=5 count=1 2>/dev/null)" = '%PDF-' ]
+}
+
+if [ "$refresh" -eq 0 ] && is_pdf "$destination"; then
+    printf '%s\n' "$destination"
+    exit 0
+fi
+
+umask 077
+mkdir -p "$cache_dir"
+temporary=$(mktemp "$cache_dir/.${note_name}.tmp.XXXXXX")
+trap 'rm -f "$temporary"' EXIT HUP INT TERM
+
+curl \
+    --fail \
+    --location \
+    --retry 3 \
+    --retry-delay 1 \
+    --connect-timeout 15 \
+    --max-time 120 \
+    --proto '=https' \
+    --proto-redir '=https' \
+    --user-agent 'knowledge-paper-fetch/1.0 (personal research use)' \
+    --output "$temporary" \
+    "$pdf_url"
+
+is_pdf "$temporary" || die "downloaded content is not a PDF: $pdf_url"
+
+mv "$temporary" "$destination"
+trap - EXIT HUP INT TERM
+printf '%s\n' "$destination"

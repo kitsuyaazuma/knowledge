@@ -14,6 +14,9 @@ the top-level section order stable, add method-specific subsections where
 useful, and remove optional sections that are empty in the completed note.
 
 Use the canonical publication page for `resource`, rather than a local PDF.
+Use `pdf` for the exact HTTPS PDF used to read the paper, pinning its version
+when possible. Omit `pdf` only when no directly accessible PDF exists; agents
+must not guess a missing download URL.
 Choose tags for the paper's topics; do not use tags for its venue or reading
 status. Preserve reading questions as headings so that they remain searchable.
 Distinguish claims made by the paper from personal interpretation or critique.
@@ -31,6 +34,7 @@ type: Paper Note
 title: <Paper title>
 description: <One-sentence description of the paper and why it matters>
 resource: <Canonical paper URL>
+pdf: <Direct HTTPS URL for the exact PDF version>
 tags:
   - <topic>
 timestamp: <ISO 8601 datetime>

@@ -3,6 +3,7 @@ type: Paper Note
 title: Benchmarking Agentic Workflow Generation
 description: A study of how well LLM agents decompose tasks into executable node chains and dependency-aware workflow graphs.
 resource: https://arxiv.org/abs/2410.07869
+pdf: https://arxiv.org/pdf/2410.07869v3
 tags:
   - llm-agents
   - workflow-generation
