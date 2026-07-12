@@ -11,4 +11,4 @@ okf_version: "0.1"
 
 # Concepts
 
-No domain concepts have been added yet.
+* [Paper Note Template](paper-note-template.md) - Reusable metadata and section structure for paper reading notes.
